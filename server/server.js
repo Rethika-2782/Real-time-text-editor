@@ -2,24 +2,20 @@
 const express = require("express");
 const http = require("http");
 const { Server } = require("socket.io");
-const cors = require("cors");
 const path = require("path");
 
 const app = express();
 
-// CORS - allow your frontend URL
-app.use(cors({
-  origin: "https://real-time-text-editor-2.onrender.com", // <-- replace with your Render frontend URL
-  methods: ["GET", "POST"]
-}));
+// Serve frontend build
+app.use(express.static(path.join(__dirname, "../client/build")));
 
 const server = http.createServer(app);
 
 // Socket.IO setup
 const io = new Server(server, {
   cors: {
-    origin: "https://real-time-text-editor-2.onrender.com", // frontend URL
-    methods: ["GET", "POST"]
+    origin: "*", // Allow all origins for simplicity on Render
+    methods: ["GET", "POST"],
   },
 });
 
@@ -60,11 +56,8 @@ io.on("connection", (socket) => {
   });
 });
 
-// Serve frontend build
-app.use(express.static(path.join(__dirname, "../client/build")));
-
-// Single-page app route
-app.get("/*", (req, res) => {
+// SPA fallback for React
+app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "../client/build/index.html"));
 });
 
