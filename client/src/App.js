@@ -3,7 +3,7 @@ import io from "socket.io-client";
 import Header from "./components/Header";
 import "./App.css"; // optional: for custom cursor styling
 
-const socket = io("http://localhost:5000");
+const socket = io(process.env.REACT_APP_SOCKET_URL || "http://localhost:5000");
 
 function App() {
   const [text, setText] = useState("");
