@@ -1,0 +1,47 @@
+.app-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+.editor-wrapper {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.editor-container {
+  position: relative;
+  background: #1e1e1e;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.editor-textarea {
+  width: 100%;
+  height: 500px;
+  border: none;
+  padding: 20px;
+  font-size: 16px;
+  font-family: 'Fira Code', 'Courier New', monospace;
+  resize: none;
+  outline: none;
+  background: transparent;
+  color: #e0e0e0;
+  line-height: 1.5;
+  z-index: 1;
+}
+
+.editor-textarea::placeholder {
+  color: #888;
+}
+
+.cursors-overlay {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  pointer-events: none;
+  z-index: 2;
+}
