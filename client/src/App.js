@@ -1,9 +1,9 @@
 import React, { useEffect, useState, useRef } from "react";
-import io from "socket.io-client";
+import { io } from "socket.io-client";
 import Header from "./components/Header";
 import "./App.css";
 
-const socket = io(); // <-- remove URL, will connect to same origin
+const socket = io(); // Connects automatically to backend on same origin
 
 function App() {
   const [text, setText] = useState("");
@@ -22,9 +22,9 @@ function App() {
 
     socket.on("cursor-remove", (id) => {
       setCursors(prev => {
-        const newCursors = { ...prev };
-        delete newCursors[id];
-        return newCursors;
+        const copy = { ...prev };
+        delete copy[id];
+        return copy;
       });
     });
 
@@ -59,9 +59,7 @@ function App() {
         rows={20}
         cols={80}
         placeholder="Start collaborating..."
-        className="editor-textarea"
       />
-      {/* Cursor overlay can be added later if needed */}
     </div>
   );
 }
