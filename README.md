@@ -29,5 +29,19 @@ Client ↔ Socket.io ↔ Server (Node.js)
 ## ▶️ Setup Instructions
 1. npm install
 2. node server.js
-3. Open http://localhost:3000<img width="1919" height="1019" alt="Screenshot 2026-04-04 164628" src="https://github.com/user-attachments/assets/ca5031d7-fc49-44c8-9705-eaf18a64fc85" />
+3. Open http://localhost:3000
+
+   IMAGES :
+
+   I) Real time collaborative text editor
+   <img width="1913" height="1012" alt="Screenshot 2026-04-04 200737" src="https://github.com/user-attachments/assets/cbb0b4e0-30ae-4d5e-815d-4b185f6ec5a0" />
+   
+   II) Adjustible text pad
+   <img width="1915" height="1010" alt="Screenshot 2026-04-04 200822" src="https://github.com/user-attachments/assets/bacd9c07-8456-4f76-ac03-4325c1464905" />
+
+   III) Text is seen in both tabs simultaneously..
+   <img width="1918" height="1006" alt="Screenshot 2026-04-04 200952" src="https://github.com/user-attachments/assets/e241458d-52bb-4de1-ad90-aa22a9fc6d22" />
+
+
+  LIVE LINK : https://real-time-text-editor-5.onrender.com/
 
