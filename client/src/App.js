@@ -1,9 +1,11 @@
+// client/src/App.js
 import React, { useEffect, useState, useRef } from "react";
-import io from "socket.io-client";
+import { io } from "socket.io-client"; // changed from default import
 import Header from "./components/Header";
-import "./App.css"; // optional: for custom cursor styling
+import "./App.css";
 
-const socket = io(process.env.REACT_APP_SOCKET_URL || "http://localhost:5000");
+const SOCKET_URL = process.env.REACT_APP_SOCKET_URL || "http://localhost:5000";
+const socket = io(SOCKET_URL);
 
 function App() {
   const [text, setText] = useState("");
@@ -11,22 +13,20 @@ function App() {
   const [cursors, setCursors] = useState({});
   const textareaRef = useRef(null);
 
-  // Update text from other users
   useEffect(() => {
-    socket.on("load-document", (doc) => setText(doc));
-    socket.on("text-change", (data) => setText(data));
-    socket.on("users", (count) => setUsers(count));
+    socket.on("load-document", setText);
+    socket.on("text-change", setText);
+    socket.on("users", setUsers);
 
-    // Update cursors
     socket.on("cursor-change", ({ id, position }) => {
       setCursors(prev => ({ ...prev, [id]: position }));
     });
 
     socket.on("cursor-remove", (id) => {
       setCursors(prev => {
-        const newCursors = { ...prev };
-        delete newCursors[id];
-        return newCursors;
+        const copy = { ...prev };
+        delete copy[id];
+        return copy;
       });
     });
 
@@ -39,22 +39,18 @@ function App() {
     };
   }, []);
 
-  // Send text changes
   const handleChange = (e) => {
     setText(e.target.value);
     socket.emit("text-change", e.target.value);
   };
 
-  // Send cursor position
   const handleCursor = () => {
     const position = textareaRef.current.selectionStart;
     socket.emit("cursor-change", position);
   };
 
-  // Render cursors as colored overlays
   const renderCursors = () => {
     if (!textareaRef.current) return null;
-
     const lines = text.split("\n");
     const elements = [];
 
@@ -69,7 +65,7 @@ function App() {
           colIndex = pos - total;
           break;
         }
-        total += lines[i].length + 1; // +1 for newline
+        total += lines[i].length + 1;
       }
 
       elements.push(
@@ -77,8 +73,8 @@ function App() {
           key={id}
           style={{
             position: "absolute",
-            left: `${colIndex * 8}px`, // approx char width
-            top: `${lineIndex * 20}px`, // approx line height
+            left: `${colIndex * 8}px`,
+            top: `${lineIndex * 20}px`,
             width: "2px",
             height: "18px",
             backgroundColor: `hsl(${(index * 90) % 360}, 70%, 50%)`,
@@ -107,9 +103,7 @@ function App() {
             placeholder="Start collaborating..."
             className="editor-textarea"
           />
-          <div className="cursors-overlay">
-            {renderCursors()}
-          </div>
+          <div className="cursors-overlay">{renderCursors()}</div>
         </div>
       </div>
     </div>
