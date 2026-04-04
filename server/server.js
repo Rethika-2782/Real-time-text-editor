@@ -1,3 +1,4 @@
+// server/server.js
 const express = require("express");
 const http = require("http");
 const { Server } = require("socket.io");
@@ -5,13 +6,21 @@ const cors = require("cors");
 const path = require("path");
 
 const app = express();
-app.use(cors());
+
+// CORS - allow your frontend URL
+app.use(cors({
+  origin: "https://real-time-text-editor-2.onrender.com", // <-- replace with your Render frontend URL
+  methods: ["GET", "POST"]
+}));
 
 const server = http.createServer(app);
 
 // Socket.IO setup
 const io = new Server(server, {
-  cors: { origin: "*" },
+  cors: {
+    origin: "https://real-time-text-editor-2.onrender.com", // frontend URL
+    methods: ["GET", "POST"]
+  },
 });
 
 // In-memory storage
@@ -45,28 +54,22 @@ io.on("connection", (socket) => {
   // Disconnect
   socket.on("disconnect", () => {
     console.log("User disconnected:", socket.id);
-
     users--;
     io.emit("users", users);
-
     socket.broadcast.emit("cursor-remove", socket.id);
   });
 });
 
-// Serve frontend (IMPORTANT for single deploy)
-app.use(express.static(path.join(__dirname, "client", "build")));
+// Serve frontend build
+app.use(express.static(path.join(__dirname, "../client/build")));
 
-import path from 'path';  // if using ES modules
-// or for CommonJS:
-const path = require('path');
-
-app.get('/*', (req, res) => {  // <-- change '*' to '/*'
-  res.sendFile(path.join(__dirname, '../client/build/index.html'));
+// Single-page app route
+app.get("/*", (req, res) => {
+  res.sendFile(path.join(__dirname, "../client/build/index.html"));
 });
 
-// Render dynamic port
+// Use Render’s dynamic port
 const PORT = process.env.PORT || 5000;
-
 server.listen(PORT, () => {
   console.log("Server running on port " + PORT);
 });
