@@ -29,4 +29,5 @@ Client ↔ Socket.io ↔ Server (Node.js)
 ## ▶️ Setup Instructions
 1. npm install
 2. node server.js
-3. Open http://localhost:3000
+3. Open http://localhost:3000<img width="1919" height="1019" alt="Screenshot 2026-04-04 164628" src="https://github.com/user-attachments/assets/ca5031d7-fc49-44c8-9705-eaf18a64fc85" />
+
