@@ -1,11 +1,9 @@
-// client/src/App.js
 import React, { useEffect, useState, useRef } from "react";
-import { io } from "socket.io-client"; // changed from default import
+import io from "socket.io-client";
 import Header from "./components/Header";
 import "./App.css";
 
-const SOCKET_URL = process.env.REACT_APP_SOCKET_URL || "http://localhost:5000";
-const socket = io(SOCKET_URL);
+const socket = io(); // <-- remove URL, will connect to same origin
 
 function App() {
   const [text, setText] = useState("");
@@ -24,9 +22,9 @@ function App() {
 
     socket.on("cursor-remove", (id) => {
       setCursors(prev => {
-        const copy = { ...prev };
-        delete copy[id];
-        return copy;
+        const newCursors = { ...prev };
+        delete newCursors[id];
+        return newCursors;
       });
     });
 
@@ -49,63 +47,21 @@ function App() {
     socket.emit("cursor-change", position);
   };
 
-  const renderCursors = () => {
-    if (!textareaRef.current) return null;
-    const lines = text.split("\n");
-    const elements = [];
-
-    Object.entries(cursors).forEach(([id, pos], index) => {
-      let total = 0;
-      let lineIndex = 0;
-      let colIndex = 0;
-
-      for (let i = 0; i < lines.length; i++) {
-        if (pos <= total + lines[i].length) {
-          lineIndex = i;
-          colIndex = pos - total;
-          break;
-        }
-        total += lines[i].length + 1;
-      }
-
-      elements.push(
-        <span
-          key={id}
-          style={{
-            position: "absolute",
-            left: `${colIndex * 8}px`,
-            top: `${lineIndex * 20}px`,
-            width: "2px",
-            height: "18px",
-            backgroundColor: `hsl(${(index * 90) % 360}, 70%, 50%)`,
-            pointerEvents: "none",
-          }}
-        ></span>
-      );
-    });
-
-    return elements;
-  };
-
   return (
     <div className="app-container">
       <Header userCount={users} />
-      <div className="editor-wrapper">
-        <div className="editor-container">
-          <textarea
-            ref={textareaRef}
-            value={text}
-            onChange={handleChange}
-            onSelect={handleCursor}
-            onKeyUp={handleCursor}
-            rows={20}
-            cols={80}
-            placeholder="Start collaborating..."
-            className="editor-textarea"
-          />
-          <div className="cursors-overlay">{renderCursors()}</div>
-        </div>
-      </div>
+      <textarea
+        ref={textareaRef}
+        value={text}
+        onChange={handleChange}
+        onSelect={handleCursor}
+        onKeyUp={handleCursor}
+        rows={20}
+        cols={80}
+        placeholder="Start collaborating..."
+        className="editor-textarea"
+      />
+      {/* Cursor overlay can be added later if needed */}
     </div>
   );
 }
