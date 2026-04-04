@@ -56,8 +56,12 @@ io.on("connection", (socket) => {
 // Serve frontend (IMPORTANT for single deploy)
 app.use(express.static(path.join(__dirname, "client", "build")));
 
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "client", "build", "index.html"));
+import path from 'path';  // if using ES modules
+// or for CommonJS:
+const path = require('path');
+
+app.get('/*', (req, res) => {  // <-- change '*' to '/*'
+  res.sendFile(path.join(__dirname, '../client/build/index.html'));
 });
 
 // Render dynamic port
