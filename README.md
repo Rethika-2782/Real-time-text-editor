@@ -45,3 +45,5 @@ Client ↔ Socket.io ↔ Server (Node.js)
 
   LIVE LINK : https://real-time-text-editor-5.onrender.com/
 
+  VIDEO LINK : https://drive.google.com/file/d/1Q6L8I-NKTV-46mcUSwimsPDs9s6lnyZ1/view?usp=drivesdk
+
