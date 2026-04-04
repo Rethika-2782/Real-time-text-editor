@@ -3,10 +3,17 @@ const express = require("express");
 const http = require("http");
 const { Server } = require("socket.io");
 const path = require("path");
+const cors = require("cors");
 
 const app = express();
 
-// Serve frontend build
+// Allow all origins for testing (update in prod)
+app.use(cors({
+  origin: "*",
+  methods: ["GET", "POST"]
+}));
+
+// Serve React frontend
 app.use(express.static(path.join(__dirname, "../client/build")));
 
 const server = http.createServer(app);
@@ -14,8 +21,8 @@ const server = http.createServer(app);
 // Socket.IO setup
 const io = new Server(server, {
   cors: {
-    origin: "*", // Allow all origins for simplicity on Render
-    methods: ["GET", "POST"],
+    origin: "*",
+    methods: ["GET", "POST"]
   },
 });
 
@@ -27,10 +34,11 @@ let users = 0;
 io.on("connection", (socket) => {
   console.log("User connected:", socket.id);
 
+  // Update user count
   users++;
   io.emit("users", users);
 
-  // Send existing text
+  // Send existing document to the new user
   socket.emit("load-document", text);
 
   // Text sync
@@ -47,7 +55,7 @@ io.on("connection", (socket) => {
     });
   });
 
-  // Disconnect
+  // Handle disconnect
   socket.on("disconnect", () => {
     console.log("User disconnected:", socket.id);
     users--;
@@ -56,12 +64,12 @@ io.on("connection", (socket) => {
   });
 });
 
-// SPA fallback for React
-app.get("*", (req, res) => {
+// SPA fallback route (Express 5 safe)
+app.get(/.*/, (req, res) => {
   res.sendFile(path.join(__dirname, "../client/build/index.html"));
 });
 
-// Use Render’s dynamic port
+// Use Render’s dynamic port or fallback
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => {
   console.log("Server running on port " + PORT);
